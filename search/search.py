@@ -72,7 +72,7 @@ def tinyMazeSearch(problem):
     w = Directions.WEST
     return  [s, s, w, s, w, w, s, w]
 
-def depthFirstSearch(problem):
+def depthFirstSearch(problem:SearchProblem):
     """
     Search the deepest nodes in the search tree first.
 
@@ -87,8 +87,28 @@ def depthFirstSearch(problem):
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
     """
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    fringe = util.Queue() #initialize a FIFO queue for fringes
+    state = problem.getStartState() #get initiali/starting state of the game    
+    
+    actions = [] #actions to take
+    discovered = {} #dictionary for checking if a node has been in the set
+    fringe.push((state, None)) #push initial state to fringe
 
+    while(fringe.isEmpty() is False):
+        state, direction = fringe.pop()
+        if(state != (5, 5)):
+            print(state, direction)
+        if(problem.isGoalState(state)):#has found a goal state?
+            break
+        if(state not in discovered):
+            discovered[state] = True
+            next_state, direction, _  = list(zip(*problem.getSuccessors(state)))
+            for s, d in zip(next_state, direction):
+                fringe.push((s, d))
+    return actions
+
+      
+        
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
