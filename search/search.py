@@ -87,25 +87,26 @@ def depthFirstSearch(problem:SearchProblem):
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
     """
     "*** YOUR CODE HERE ***"
+    #Memory initialization
     fringe = util.Queue() #initialize a FIFO queue for fringes
-    state = problem.getStartState() #get initiali/starting state of the game    
-    
-    actions = [] #actions to take
     discovered = {} #dictionary for checking if a node has been in the set
-    fringe.push((state, None)) #push initial state to fringe
 
+    #Default/initial state
+    state = problem.getStartState() #get initiali/starting state of the game    
+    fringe.push((state, [])) #push initial state to fringe
+
+    #Run DFS
     while(fringe.isEmpty() is False):
-        state, direction = fringe.pop()
-        if(state != (5, 5)):
-            print(state, direction)
+        state, directions = fringe.pop() #retrieves last state and directions on the fringe
         if(problem.isGoalState(state)):#has found a goal state?
-            break
+            return directions #proper action path
         if(state not in discovered):
             discovered[state] = True
-            next_state, direction, _  = list(zip(*problem.getSuccessors(state)))
+            next_state, direction, _  = list(zip(*problem.getSuccessors(state))) #stack vertically
             for s, d in zip(next_state, direction):
-                fringe.push((s, d))
-    return actions
+                fringe.push((s, [*directions, d])) #squeeze original directions list with new direction
+
+    return [] #couldn't find a solution
 
       
         
