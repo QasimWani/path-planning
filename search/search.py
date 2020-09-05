@@ -118,7 +118,7 @@ def breadthFirstSearch(problem):
     discovered = {} #dictionary for checking if a node has been in the set
 
     #Default/initial state
-    state = problem.getStartState() #get initiali/starting state of the game    
+    state = problem.getStartState() #get initial/starting state of the game    
     fringe.push((state, [])) #push initial state to fringe
 
     #mark initial state as visited
@@ -137,10 +137,35 @@ def breadthFirstSearch(problem):
 
     return [] #couldn't find a solution
 
-def uniformCostSearch(problem):
+def uniformCostSearch(problem:SearchProblem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    #Memory initialization
+    fringe = util.PriorityQueue()
+    discovered = {}
+
+    #Initial/stating state
+    state = problem.getStartState() #get initial/starting state of the game
+    fringe.push((state, []), 0)
+
+    # #mark initial state as visited
+    # discovered[state] = True
+
+    #Run UCS
+    while(fringe.isEmpty() is False):
+        state, directions = fringe.pop() #retrieves last state and directions on the fringe
+        if(problem.isGoalState(state)):#has found a goal state?
+            return directions #proper action path
+        
+        next_state, direction, _  = list(zip(*problem.getSuccessors(state))) #stack vertically
+        for s, d in zip(next_state, direction):
+            if(s not in discovered):
+                actions = [*directions, d]
+                fringe.push((s, actions), problem.getCostOfActions(actions)) #squeeze original directions list with new direction
+                discovered[s] = True
+
+    return [] #couldn't find a solution
+
 
 def nullHeuristic(state, problem=None):
     """
