@@ -102,7 +102,8 @@ def depthFirstSearch(problem:SearchProblem):
             return directions #proper action path
         if(state not in discovered):
             discovered[state] = True
-            next_state, direction, _  = list(zip(*problem.getSuccessors(state))) #stack vertically
+            transition = list(zip(*problem.getSuccessors(state))) #stack vertically
+            next_state, direction, _  = transition if len(transition) >= 1 else ([], [], [])
             for s, d in zip(next_state, direction):
                 fringe.push((s, [*directions, d])) #squeeze original directions list with new direction
 
@@ -129,7 +130,8 @@ def breadthFirstSearch(problem):
         if(problem.isGoalState(state)):#has found a goal state?
             return directions #proper action path
         
-        next_state, direction, _  = list(zip(*problem.getSuccessors(state))) #stack vertically
+        transition = list(zip(*problem.getSuccessors(state))) #stack vertically
+        next_state, direction, _  = transition if len(transition) >= 1 else ([], [], []) #check for none
         for s, d in zip(next_state, direction):
             if(s not in discovered):
                 fringe.push((s, [*directions, d])) #squeeze original directions list with new direction
@@ -157,7 +159,8 @@ def uniformCostSearch(problem:SearchProblem):
         if(problem.isGoalState(state)):#has found a goal state?
             return directions #proper action path
         
-        next_state, direction, _  = list(zip(*problem.getSuccessors(state))) #stack vertically
+        transition = list(zip(*problem.getSuccessors(state))) #stack vertically
+        next_state, direction, _  = transition if len(transition) >= 1 else ([], [], []) #check for none
         for s, d in zip(next_state, direction):
             if(s not in discovered):
                 actions = [*directions, d]
@@ -177,7 +180,33 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    #Memory initialization
+    fringe = util.PriorityQueue()
+    discovered = {}
+    
+    #Initial/stating state
+    state = problem.getStartState() #get initial/starting state of the game
+    fringe.push((state, []), 0)
+
+    # #mark initial state as visited
+    # discovered[state] = True
+
+    #Run A*
+    while(fringe.isEmpty() is False):
+        state, directions = fringe.pop() #retrieves last state and directions on the fringe
+        if(problem.isGoalState(state)):#has found a goal state?
+            return directions #proper action path
+        
+        transition = list(zip(*problem.getSuccessors(state))) #stack vertically
+        next_state, direction, _  = transition if len(transition) >= 1 else ([], [], []) #check for none
+        for s, d in zip(next_state, direction):
+            if(s not in discovered):
+                actions = [*directions, d]
+                fn = problem.getCostOfActions(actions) + heuristic(s, problem)
+                fringe.push((s, actions), fn) #squeeze original directions list with new direction
+                discovered[s] = True
+
+    return [] #couldn't find a solution
 
 
 # Abbreviations
