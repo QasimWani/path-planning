@@ -88,7 +88,7 @@ def depthFirstSearch(problem:SearchProblem):
     """
     "*** YOUR CODE HERE ***"
     #Memory initialization
-    fringe = util.Stack() #initialize a LIFO stack for fringes
+    fringe = util.Stack() #initialize a LIFO queue (Stack) for fringes
     discovered = {} #dictionary for checking if a node has been in the set
 
     #Default/initial state
