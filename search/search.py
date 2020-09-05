@@ -88,7 +88,7 @@ def depthFirstSearch(problem:SearchProblem):
     """
     "*** YOUR CODE HERE ***"
     #Memory initialization
-    fringe = util.Queue() #initialize a FIFO queue for fringes
+    fringe = util.Stack() #initialize a LIFO stack for fringes
     discovered = {} #dictionary for checking if a node has been in the set
 
     #Default/initial state
@@ -113,7 +113,29 @@ def depthFirstSearch(problem:SearchProblem):
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    #Memory initialization
+    fringe = util.Queue() #initialize a FIFO queue for fringes
+    discovered = {} #dictionary for checking if a node has been in the set
+
+    #Default/initial state
+    state = problem.getStartState() #get initiali/starting state of the game    
+    fringe.push((state, [])) #push initial state to fringe
+
+    #mark initial state as visited
+    discovered[state] = True
+    #Run BFS
+    while(fringe.isEmpty() is False):
+        state, directions = fringe.pop() #retrieves last state and directions on the fringe
+        if(problem.isGoalState(state)):#has found a goal state?
+            return directions #proper action path
+        
+        next_state, direction, _  = list(zip(*problem.getSuccessors(state))) #stack vertically
+        for s, d in zip(next_state, direction):
+            if(s not in discovered):
+                fringe.push((s, [*directions, d])) #squeeze original directions list with new direction
+                discovered[s] = True
+
+    return [] #couldn't find a solution
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
