@@ -5,6 +5,6 @@ List of path planning algorithms written in Python
 
 * [X] Depth First Search - Stack Architecture
 * [X] Breadth First Search - Queue Architecture
-* [ ] Uniform Cost Search - Priority Queue Architecture
-* [ ] A* Search
+* [X] Uniform Cost Search - Priority Queue Architecture
+* [X] A* Search
 * [ ] Admissible Heuristics
