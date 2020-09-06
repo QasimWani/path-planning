@@ -289,7 +289,7 @@ class CornersProblem(search.SearchProblem):
         # in initializing the problem
         "*** YOUR CODE HERE ***"
         # For display purposes
-        self.goal_counter = 0
+        self.corners_visited = []
         self.visualize = visualize
         self._visited, self._visitedlist= {}, []
 
@@ -299,6 +299,7 @@ class CornersProblem(search.SearchProblem):
         space)
         """
         "*** YOUR CODE HERE ***"
+        # would probably have to do something in here
         return self.startingPosition
 
     def isGoalState(self, state):
@@ -306,11 +307,11 @@ class CornersProblem(search.SearchProblem):
         Returns whether this search state is a goal state of the problem.
         """
         "*** YOUR CODE HERE ***"
-        isGoal = state in self.corners
-        if(isGoal):
-            self.goal_counter += 1
-        # isGoal = isGoal and self.goal_counter == len(self.corners)
-        print(isGoal, self.goal_counter)
+        if(state not in self.corners_visited and state in self.corners):
+            self.corners_visited.append(state)
+
+        isGoal = state in self.corners and len(self.corners_visited) == 4
+        print(self.corners_visited, isGoal, len(self.corners_visited))
         # For display purposes only
         if self.visualize:
             self._visitedlist.append(state)
