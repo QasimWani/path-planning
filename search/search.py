@@ -125,7 +125,7 @@ def breadthFirstSearch(problem):
     #mark initial state as visited
     discovered[state] = True
     #Run BFS
-    while(fringe.isEmpty() is False):
+    while(not fringe.isEmpty()):
         state, directions = fringe.pop() #retrieves last state and directions on the fringe
         if(problem.isGoalState(state)):#has found a goal state?
             return directions #proper action path
@@ -150,25 +150,33 @@ def uniformCostSearch(problem:SearchProblem):
     state = problem.getStartState() #get initial/starting state of the game
     fringe.push((state, []), 0)
 
-    # #mark initial state as visited
-    # discovered[state] = True
+    #mark initial state as visited
+    discovered[state] = 0
 
     #Run UCS
-    while(fringe.isEmpty() is False):
+    while(not fringe.isEmpty()):
         state, directions = fringe.pop() #retrieves last state and directions on the fringe
+
         if(problem.isGoalState(state)):#has found a goal state?
             return directions #proper action path
         
         transition = list(zip(*problem.getSuccessors(state))) #stack vertically
-        next_state, direction, _  = transition if len(transition) >= 1 else ([], [], []) #check for none
+        next_state, direction, _  = transition if len(transition) >= 1 else ([], [], None) #check for none
+        
         for s, d in zip(next_state, direction):
+            actions = [*directions, d]
+            priority = problem.getCostOfActions(actions) #store priority for Heap
+            
+            #If path already found, check if that path has a lower priority.
+            #if not, append the new path to the queue so that'll be popped first.
+            if(s in discovered and discovered[s] > priority):
+                fringe.update((s, actions), priority)
+
+            #New path found in search. append to Queue and mark it as discovered.
             if(s not in discovered):
-                actions = [*directions, d]
-                fringe.push((s, actions), problem.getCostOfActions(actions)) #squeeze original directions list with new direction
-                discovered[s] = True
-
+                fringe.push((s, actions), priority) #squeeze original directions list with new direction
+                discovered[s] = priority
     return [] #couldn't find a solution
-
 
 def nullHeuristic(state, problem=None):
     """
@@ -183,31 +191,38 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     #Memory initialization
     fringe = util.PriorityQueue()
     discovered = {}
-    
+
     #Initial/stating state
     state = problem.getStartState() #get initial/starting state of the game
     fringe.push((state, []), 0)
 
-    # #mark initial state as visited
-    # discovered[state] = True
+    #mark initial state as visited
+    discovered[state] = 0
 
     #Run A*
-    while(fringe.isEmpty() is False):
+    while(not fringe.isEmpty()):
         state, directions = fringe.pop() #retrieves last state and directions on the fringe
+
         if(problem.isGoalState(state)):#has found a goal state?
             return directions #proper action path
         
         transition = list(zip(*problem.getSuccessors(state))) #stack vertically
-        next_state, direction, _  = transition if len(transition) >= 1 else ([], [], []) #check for none
+        next_state, direction, _  = transition if len(transition) >= 1 else ([], [], None) #check for none
+        
         for s, d in zip(next_state, direction):
+            actions = [*directions, d]
+            priority = problem.getCostOfActions(actions) + heuristic(s, problem) #store priority for heap
+
+            # If path already found, check if that path has a lower priority.
+            # if not, append the new path to the queue so that'll be popped first.
+            if(s in discovered and discovered[s] > priority):
+                fringe.update((s, actions), priority)
+
+            # New path found in search. append to Queue and mark it as discovered.
             if(s not in discovered):
-                actions = [*directions, d]
-                fn = problem.getCostOfActions(actions) + heuristic(s, problem)
-                fringe.push((s, actions), fn) #squeeze original directions list with new direction
-                discovered[s] = True
-
+                fringe.push((s, actions), priority) #squeeze original directions list with new direction
+                discovered[s] = priority
     return [] #couldn't find a solution
-
 
 # Abbreviations
 bfs = breadthFirstSearch
