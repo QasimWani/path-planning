@@ -185,7 +185,7 @@ def nullHeuristic(state, problem=None):
     """
     return 0
 
-def aStarSearch(problem, heuristic=nullHeuristic):
+def aStarSearch(problem:SearchProblem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
     #Memory initialization
