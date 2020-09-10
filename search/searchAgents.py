@@ -420,6 +420,7 @@ class FoodSearchProblem:
         self.startingGameState = startingGameState
         self._expanded = 0 # DO NOT CHANGE
         self.heuristicInfo = {} # A dictionary for the heuristic to store information
+        self.gamestate = startingGameState #store the game state
 
     def getStartState(self):
         return self.start
@@ -496,7 +497,7 @@ def foodHeuristic(state, problem):
 
     maximum_maze_distance = 0 #maximum minimum maze distance
     for food in foodGrid.asList():
-        maze_BFS_distance = mazeDistance(position, food, problem.gameState)
+        maze_BFS_distance = mazeDistance(position, food, problem.gamestate)
         if(maze_BFS_distance > maximum_maze_distance):
             maximum_maze_distance = maze_BFS_distance
     
@@ -531,7 +532,7 @@ class ClosestDotSearchAgent(SearchAgent):
         problem = AnyFoodSearchProblem(gameState)
 
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        return search.astar(problem) #set A* as the search problem to Finding any food
 
 class AnyFoodSearchProblem(PositionSearchProblem):
     """
@@ -567,7 +568,7 @@ class AnyFoodSearchProblem(PositionSearchProblem):
         x,y = state
 
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        return state in self.food.asList() #is the current state a goal state, i.e. located in a food position
 
 def mazeDistance(point1, point2, gameState):
     """
