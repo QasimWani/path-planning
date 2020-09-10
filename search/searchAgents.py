@@ -40,6 +40,8 @@ from game import Actions
 import util
 import time
 import search
+import numpy as np
+
 
 class GoWestAgent(Agent):
     "An agent that goes West until it can't."
@@ -289,7 +291,6 @@ class CornersProblem(search.SearchProblem):
         # in initializing the problem
         "*** YOUR CODE HERE ***"
         # For display purposes
-        self.corners_visited = []
         self.visualize = visualize
         self._visited, self._visitedlist= {}, []
 
@@ -300,21 +301,20 @@ class CornersProblem(search.SearchProblem):
         """
         "*** YOUR CODE HERE ***"
         # would probably have to do something in here
-        return self.startingPosition
+        return (self.startingPosition, tuple(np.zeros(len(self.corners), dtype=bool))) #State representation: (x, y), bool array indicating whether corner reached
 
     def isGoalState(self, state):
         """
         Returns whether this search state is a goal state of the problem.
         """
         "*** YOUR CODE HERE ***"
-        if(state not in self.corners_visited and state in self.corners):
-            self.corners_visited.append(state)
+        current_position, corners = state #get current state
 
-        isGoal = state in self.corners and len(self.corners_visited) == 4
-        print(self.corners_visited, isGoal, len(self.corners_visited))
+        isGoal = list(corners).count(True) == len(self.corners) #goal achieved if pacman navigated to all corners
+
         # For display purposes only
         if self.visualize:
-            self._visitedlist.append(state)
+            self._visitedlist.append(current_position)
             import __main__
             if '_display' in dir(__main__):
                 if 'drawExpandedCells' in dir(__main__._display): #@UndefinedVariable
@@ -332,17 +332,26 @@ class CornersProblem(search.SearchProblem):
             is the incremental cost of expanding to that successor
         """
         successors = []
+        
         for action in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
             # Add a successor state to the successor list if the action is legal
             # Here's a code snippet for figuring out whether a new position hits a wall:
             "*** YOUR CODE HERE ***"
-            x,y = state
+            (x,y), corners = state #extract state into position and bool
             dx, dy = Actions.directionToVector(action)
             nextx, nexty = int(x + dx), int(y + dy)
+            position = nextx, nexty #generate next position
             hitsWall = self.walls[nextx][nexty]
-
+            
+            #Checks if the pacman has moved into a corner, and if so, set that corner to true.
+            if(position in self.corners): #check to see if reached corner state
+                corners = list(corners) #typecast to list for value assignment, since tuples are immutable
+                index = list(self.corners).index(position) #find position of corner in corners array
+                corners[index] = True #set bool to True
+                corners = tuple(corners) #convert back to tuple
+            
             if not hitsWall: #filter out wall positions in successors
-                successors.append( ( (nextx, nexty), action, 1) )
+                successors.append( ( (position, corners), action, 1) )
         self._expanded += 1 # DO NOT CHANGE
         return successors
 
