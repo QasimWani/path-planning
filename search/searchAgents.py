@@ -384,9 +384,22 @@ def cornersHeuristic(state, problem):
     """
     corners = problem.corners # These are the corner coordinates
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
-
     "*** YOUR CODE HERE ***"
-    return 0 # Default to trivial solution
+    position, corners_visited = state #Extract state representation
+
+    if(position in corners):
+        return 0 #reached goal state
+
+
+    minimum_manhattan_distance = np.inf #maximum minumum distance possible
+    for i, corner in enumerate(corners):
+        x_delta = abs(position[0] - corner[0])
+        y_delta = abs(position[1] - corner[1])
+        manhattan_distance = x_delta + y_delta
+        if(manhattan_distance < minimum_manhattan_distance and bool(corners_visited[i]) is False):
+            minimum_manhattan_distance = manhattan_distance
+            
+    return minimum_manhattan_distance #return shortest manhattan distance to next nearest goal state
 
 class AStarCornersAgent(SearchAgent):
     "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
