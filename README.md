@@ -7,4 +7,7 @@ List of path planning algorithms written in Python
 * [X] Breadth First Search - Queue Architecture
 * [X] Uniform Cost Search - Priority Queue Architecture
 * [X] A* Search
-* [ ] Admissible Heuristics
+* [X] Finding all the corners
+* [ ] Corners Problem: Heuristics
+* [ ] Eating All The Dots
+* [ ] Suboptimal Search
