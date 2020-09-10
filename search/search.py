@@ -119,7 +119,7 @@ def breadthFirstSearch(problem):
     discovered = {} #dictionary for checking if a node has been in the set
 
     #Default/initial state
-    state = problem.getStartState() #get initial/starting state of the game    
+    state = problem.getStartState() #get initial/starting state of the game  
     fringe.push((state, [])) #push initial state to fringe
 
     #mark initial state as visited
