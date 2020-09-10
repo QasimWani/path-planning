@@ -390,16 +390,17 @@ def cornersHeuristic(state, problem):
     if(position in corners):
         return 0 #reached goal state
 
-
-    minimum_manhattan_distance = np.inf #maximum minumum distance possible
+    minimum_manhattan_distance = np.inf #maximum distance possible
+    sum_manhattan = 0 #TEMP
     for i, corner in enumerate(corners):
         x_delta = abs(position[0] - corner[0])
         y_delta = abs(position[1] - corner[1])
         manhattan_distance = x_delta + y_delta
         if(manhattan_distance < minimum_manhattan_distance and bool(corners_visited[i]) is False):
+            # sum_manhattan += manhattan_distance #sum up all Manhattan distances TEMP
             minimum_manhattan_distance = manhattan_distance
             
-    return minimum_manhattan_distance #return shortest manhattan distance to next nearest goal state
+    return max(minimum_manhattan_distance, sum_manhattan) #return shortest manhattan distance to next nearest goal state
 
 class AStarCornersAgent(SearchAgent):
     "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
@@ -493,7 +494,20 @@ def foodHeuristic(state, problem):
     """
     position, foodGrid = state
     "*** YOUR CODE HERE ***"
-    return 0
+    if(position in foodGrid.asList() or not foodGrid.asList()):
+        return 0 #reached goal state
+
+    
+    maximum_manhattan_distance = 1
+    
+    for food in foodGrid.asList():
+        x_delta = abs(position[0] - food[0])
+        y_delta = abs(position[1] - food[1])
+        manhattan_distance = x_delta + y_delta
+        if(manhattan_distance > maximum_manhattan_distance):
+            maximum_manhattan_distance = manhattan_distance
+    
+    return maximum_manhattan_distance #return longest manhattan distance to next nearest goal state
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"
